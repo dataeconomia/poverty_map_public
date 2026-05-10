@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Pobreza femenina en Europa</title>
+
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div id="map"></div>
+
+  <div id="panel">
+
+    <div class="year-top">
+        <span id="yearLabel">2025</span>
+    </div>
+
+    <input
+        type="range"
+        id="yearSlider"
+        min="2015"
+        max="2025"
+        value="2025"
+        step="1"
+    />
+
+    <div class="slider-years">
+        <span>2015</span>
+        <span>2025</span>
+    </div>
+
+</div>p="1"
+      />
+
+      <div class="slider-years">
+        <span>2015</span>
+        <span>2025</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://unpkg.com/wellknown@0.5.0/wellknown.js"></script>
+
+<script>
+window.MAPBOX_TOKEN = "MAPBOX_TOKEN";
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>
