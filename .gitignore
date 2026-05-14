@@ -1,2 +1,4 @@
 poverty_map.csv
 .DS_Store
+.vercel
+.env*.local

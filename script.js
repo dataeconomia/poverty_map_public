@@ -208,9 +208,9 @@ function updateMap(year) {
 }
 
 map.on('load', async () => {
- const SUPABASE_URL = 'SUPABASE_URL';
+const SUPABASE_URL = 'https://urtbblevrtiherzhhngl.supabase.co';
 
-const SUPABASE_KEY = 'PUBLIC_KEY';
+const SUPABASE_KEY = 'sb_publishable_UHeDliqNsxMACgZTtjkVkw_hKDoz6qD';
 
 const response = await fetch(
   `${SUPABASE_URL}/rest/v1/poverty_map?select=*`,
