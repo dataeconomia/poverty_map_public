@@ -177,7 +177,9 @@ function makeMiniChart(history, activeYear = currentYear) {
   });
 
   const line = points.map(p => `${p.x},${p.y}`).join(' ');
-  const activePoint = points.find(p => Number(p.year) === Number(activeYear)) || points[points.length - 1];
+  const activePoint =
+    points.find(p => Number(p.year) === Number(activeYear)) ||
+    points[points.length - 1];
 
   return `
     <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
@@ -279,10 +281,9 @@ map.on('load', async () => {
     const p = e.features[0].properties;
     const history = getHistory(p.country_key);
 
-    const active = {
-      year: Number(p.year),
-      poverty_rate: Number(p.poverty_rate)
-    };
+    const active =
+      history.find(d => Number(d.year) === Number(currentYear)) ||
+      history[history.length - 1];
 
     map.setFilter('poverty-hover', ['==', 'country_key', p.country_key]);
 
@@ -297,8 +298,8 @@ map.on('load', async () => {
       .setHTML(`
         <div class="tooltip">
           <h3>${p.name}</h3>
-          <p><strong>${active.poverty_rate}%</strong> en ${active.year}</p>
-          ${makeMiniChart(history, active.year)}
+          <p><strong>${active.poverty_rate}%</strong> en ${currentYear}</p>
+          ${makeMiniChart(history, currentYear)}
         </div>
       `)
       .addTo(map);
