@@ -1,12 +1,12 @@
 mapboxgl.accessToken = window.MAPBOX_TOKEN;
 
 const palette = [
-  '#f8c1c5',
-  '#ef8b99',
-  '#d75d7d',
-  '#b23667',
-  '#8a204f',
-  '#5b1238'
+  '#EFC6C7',
+  '#E7A7B4',
+  '#D988A0',
+  '#C05A84',
+  '#8F3A68',
+  '#6B1F4E'
 ];
 
 const chartColor = '#5b1238';
@@ -51,15 +51,15 @@ const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/light-v11',
   center: [18, 50],
-zoom: 3.55,
-maxBounds: [
-  [-25, 33],
-  [45, 72]
-],
- pitchWithRotate: false,
+  zoom: 3.55,
+  maxBounds: [
+    [-25, 33],
+    [45, 72]
+  ],
+  pitchWithRotate: false,
   dragRotate: false,
   minZoom: 3,
-maxZoom: 5
+  maxZoom: 5
 });
 
 map.on('style.load', () => {
@@ -95,12 +95,12 @@ map.on('style.load', () => {
       map.setPaintProperty(layer.id, 'text-halo-color', 'rgba(60,60,60,0.85)');
       map.setPaintProperty(layer.id, 'text-halo-width', 1.4);
       map.setLayoutProperty(layer.id, 'text-size', [
-  'interpolate',
-  ['linear'],
-  ['zoom'],
-  2, 11,
-  5, 16
-]);
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        2, 11,
+        5, 16
+      ]);
     }
   });
 });
@@ -167,11 +167,17 @@ function makeMiniChart(history) {
   const points = history.map((d, i) => {
     const x = padding + (i / (history.length - 1)) * (width - padding * 2);
     const y = height - padding - ((d.poverty_rate - min) / (max - min || 1)) * (height - padding * 2);
-    return { x, y, year: d.year, value: d.poverty_rate };
+
+    return {
+      x,
+      y,
+      year: d.year,
+      value: d.poverty_rate
+    };
   });
 
   const line = points.map(p => `${p.x},${p.y}`).join(' ');
-  const last = points[points.length - 1];
+  const activePoint = points.find(p => Number(p.year) === Number(currentYear)) || points[points.length - 1];
 
   return `
     <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
@@ -193,7 +199,7 @@ function makeMiniChart(history) {
         <circle cx="${p.x}" cy="${p.y}" r="3" fill="${chartColor}"/>
       `).join('')}
 
-      <circle cx="${last.x}" cy="${last.y}" r="4" fill="${chartColor}"/>
+      <circle cx="${activePoint.x}" cy="${activePoint.y}" r="4.5" fill="${chartColor}"/>
 
       <text x="${padding - 2}" y="${height - 1}" font-size="10" fill="#777">2015</text>
       <text x="${width / 2 - 10}" y="${height - 1}" font-size="10" fill="#777">2020</text>
@@ -205,24 +211,25 @@ function makeMiniChart(history) {
 function updateMap(year) {
   const source = map.getSource('poverty-source');
   if (source) source.setData(buildGeoJSON(year));
+
+  if (popup) popup.remove();
 }
 
 map.on('load', async () => {
-const SUPABASE_URL = 'https://urtbblevrtiherzhhngl.supabase.co';
+  const SUPABASE_URL = 'https://urtbblevrtiherzhhngl.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_UHeDliqNsxMACgZTtjkVkw_hKDoz6qD';
 
-const SUPABASE_KEY = 'sb_publishable_UHeDliqNsxMACgZTtjkVkw_hKDoz6qD';
-
-const response = await fetch(
-  `${SUPABASE_URL}/rest/v1/poverty_map?select=*`,
-  {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/poverty_map?select=*`,
+    {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`
+      }
     }
-  }
-);
+  );
 
-allRows = await response.json();
+  allRows = await response.json();
 
   map.addSource('poverty-source', {
     type: 'geojson',
@@ -271,7 +278,8 @@ allRows = await response.json();
 
     const p = e.features[0].properties;
     const history = getHistory(p.country_key);
-    const latest = history.find(d => d.year === 2025) || history[history.length - 1];
+
+    const active = history.find(d => Number(d.year) === Number(currentYear)) || history[history.length - 1];
 
     map.setFilter('poverty-hover', ['==', 'country_key', p.country_key]);
 
@@ -286,7 +294,7 @@ allRows = await response.json();
       .setHTML(`
         <div class="tooltip">
           <h3>${p.name}</h3>
-          <p><strong>${latest.poverty_rate}%</strong> en ${latest.year}</p>
+          <p><strong>${active.poverty_rate}%</strong> en ${active.year}</p>
           ${makeMiniChart(history)}
         </div>
       `)
