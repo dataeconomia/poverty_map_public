@@ -297,7 +297,7 @@ map.on('load', async () => {
       .setLngLat(e.lngLat)
       .setHTML(`
         <div class="tooltip">
-          <h3>${p.name}</h3>
+          <h3>${p.name} TEST</h3>
           <p>
             <strong>${active ? active.poverty_rate : 'Sin dato'}${active ? '%' : ''}</strong>
             en ${selectedYear}
