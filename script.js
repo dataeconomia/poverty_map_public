@@ -10,6 +10,7 @@ const palette = [
 ];
 
 const chartColor = '#5b1238';
+const inactivePointColor = '#111';
 
 const countryNamesES = {
   Germany: 'Alemania',
@@ -153,7 +154,7 @@ function getHistory(countryKey) {
     .sort((a, b) => a.year - b.year);
 }
 
-function makeMiniChart(history, activeYear = currentYear) {
+function makeMiniChart(history, activeYear) {
   if (!history.length) return '';
 
   const width = 145;
@@ -177,9 +178,6 @@ function makeMiniChart(history, activeYear = currentYear) {
   });
 
   const line = points.map(p => `${p.x},${p.y}`).join(' ');
-  const activePoint =
-    points.find(p => Number(p.year) === Number(activeYear)) ||
-    points[points.length - 1];
 
   return `
     <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
@@ -191,17 +189,20 @@ function makeMiniChart(history, activeYear = currentYear) {
       <polyline
         points="${line}"
         fill="none"
-        stroke="${chartColor}"
-        stroke-width="2.2"
+        stroke="${inactivePointColor}"
+        stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
 
       ${points.map(p => `
-        <circle cx="${p.x}" cy="${p.y}" r="3" fill="${chartColor}"/>
+        <circle
+          cx="${p.x}"
+          cy="${p.y}"
+          r="${Number(p.year) === Number(activeYear) ? 4.8 : 3}"
+          fill="${Number(p.year) === Number(activeYear) ? chartColor : inactivePointColor}"
+        />
       `).join('')}
-
-      <circle cx="${activePoint.x}" cy="${activePoint.y}" r="4.5" fill="${chartColor}"/>
 
       <text x="${padding - 2}" y="${height - 1}" font-size="10" fill="#777">2015</text>
       <text x="${width / 2 - 10}" y="${height - 1}" font-size="10" fill="#777">2020</text>
@@ -278,12 +279,11 @@ map.on('load', async () => {
   map.on('mousemove', 'poverty-fill', e => {
     map.getCanvas().style.cursor = 'pointer';
 
+    const selectedYear = Number(document.getElementById('yearSlider').value);
     const p = e.features[0].properties;
     const history = getHistory(p.country_key);
 
-    const active =
-      history.find(d => Number(d.year) === Number(currentYear)) ||
-      history[history.length - 1];
+    const active = history.find(d => Number(d.year) === selectedYear);
 
     map.setFilter('poverty-hover', ['==', 'country_key', p.country_key]);
 
@@ -292,14 +292,17 @@ map.on('load', async () => {
     popup = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false,
-      maxWidth: '170px'
+      maxWidth: '190px'
     })
       .setLngLat(e.lngLat)
       .setHTML(`
         <div class="tooltip">
           <h3>${p.name}</h3>
-          <p><strong>${active.poverty_rate}%</strong> en ${currentYear}</p>
-          ${makeMiniChart(history, currentYear)}
+          <p>
+            <strong>${active ? active.poverty_rate : 'Sin dato'}${active ? '%' : ''}</strong>
+            en ${selectedYear}
+          </p>
+          ${makeMiniChart(history, selectedYear)}
         </div>
       `)
       .addTo(map);

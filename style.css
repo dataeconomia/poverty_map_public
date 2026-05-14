@@ -10,7 +10,8 @@ body {
   inset: 0;
 }
 
-/* Panel más compacto */
+/* PANEL */
+
 #panel {
   position: absolute;
   top: 18px;
@@ -40,7 +41,20 @@ body {
   max-width: 235px;
 }
 
-/* Slider tipo CARTO */
+/* AÑO */
+
+.year-top {
+  margin-bottom: 8px;
+}
+
+#yearLabel {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* SLIDER */
+
 .slider-title {
   font-size: 15px;
   font-weight: 700;
@@ -62,22 +76,24 @@ body {
 .slider-years span {
   background: #fff;
   border: 1px solid #cfcfcf;
-  border-radius: 6px;
-  padding: 6px 14px;
+  border-radius: 8px;
+  padding: 8px 18px;
   font-size: 14px;
   color: #333;
+  font-weight: 500;
 }
 
-/* Tooltip compacto */
+/* TOOLTIP */
+
 .mapboxgl-popup {
-  max-width: 170px !important;
+  max-width: 190px !important;
 }
 
 .mapboxgl-popup-content {
-  width: 170px;
-  max-width: 170px;
-  padding: 10px 10px 6px;
-  border-radius: 12px;
+  width: 190px;
+  max-width: 190px;
+  padding: 14px 14px 10px;
+  border-radius: 14px;
   font-family: Arial, Helvetica, sans-serif;
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
@@ -87,19 +103,68 @@ body {
 }
 
 .tooltip h3 {
-  margin: 0 0 5px;
-  font-size: 14px;
+  margin: 0 0 6px;
+  font-size: 15px;
   line-height: 1.1;
+  font-weight: 700;
+  color: #111;
 }
 
 .tooltip p {
-  margin: 0 0 6px;
-  font-size: 11.5px;
+  margin: 0 0 8px;
+  font-size: 12px;
   line-height: 1.2;
   color: #222;
+}
+
+.tooltip strong {
+  font-size: 13px;
 }
 
 .tooltip svg {
   width: 100%;
   height: auto;
+}
+
+/* LEYENDA */
+
+#legend {
+  position: absolute;
+  left: 18px;
+  bottom: 24px;
+  background: rgba(255,255,255,0.94);
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.13);
+  z-index: 10;
+  font-family: Arial, Helvetica, sans-serif;
+  width: 115px;
+}
+
+.legend-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+
+.legend-row span {
+  width: 18px;
+  height: 14px;
+  border-radius: 3px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.legend-row p {
+  margin: 0;
+  font-size: 11px;
+  color: #333;
 }
